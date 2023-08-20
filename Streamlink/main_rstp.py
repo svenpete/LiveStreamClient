@@ -14,10 +14,10 @@ LIVE_STREAM_URL_HLS = 'http://192.168.2.87:1935/DMA/brick/playlist.m3u8'
 start_time = datetime.datetime.now()
 
 # Replace with the path to your recorded .ts file
-ts_file_path = 'MPEG.ts'
+ts_file_path = 'output-file.ts'
 
 
-input_container = av.open(LIVE_STREAM_URL_RTSP)
+input_container = av.open(ts_file_path)
 startup_time = None
 
 # Initialize variables
@@ -63,7 +63,7 @@ for packet in input_container.demux():
 
     timestamp = packet.pts * packet.stream.time_base if packet.pts is not None else None
 
-    frame_window.append(packet)
+
 
     # Frame count and lost frames for FLR
     frame_count += 1
@@ -106,19 +106,21 @@ for packet in input_container.demux():
             jitters.append(interval)
         prev_packet_time = timestamp
 
+
     if all(p.pts is not None for p in frame_window) and len(frame_window) == WINDOW_SIZE:
         total_bits = sum(p.size * 8 for p in frame_window)
         duration = (frame_window[-1].pts - frame_window[0].pts) * packet.stream.time_base
         bitrate = total_bits / duration
         bitrates.append(bitrate)
-
-        if timestamp is not None:
-            timestamps.append(timestamp)
-
-        # Calculate buffer time
         buffer_time = duration
         buffer_times.append(buffer_time)  # Hinzufügen zur Liste
 
+    if timestamp is not None:
+        timestamps.append(timestamp)
+
+        # Calculate buffer time
+    frame_window.append(packet)
+    if len(frame_window) > WINDOW_SIZE:
         frame_window.pop(0)
 
     # Update the previous PTS
@@ -172,7 +174,8 @@ def plot_and_save_data(x_values, y_values, x_label, y_label, title, filename, di
     plt.savefig(os.path.join(directory, filename))
 
 # Example usage for plotting Bitrate
-plot_and_save_data(timestamps, bitrates, 'Time (s)', 'Bitrate (bps)', 'Bitrate Over Time', 'bitrate.png', directory_name)
+min_len = min(len(timestamps), len(bitrates))
+plot_and_save_data(timestamps[:min_len], bitrates[:min_len], 'Time (s)', 'Bitrate (bps)', 'Bitrate Over Time', 'bitrate.png', directory_name)
 
 # Example usage for plotting Jitter
 min_len = min(len(timestamps), len(jitters))
@@ -183,7 +186,8 @@ min_len = min(len(timestamps), len(latencies))
 plot_and_save_data(timestamps[:min_len], latencies[:min_len], 'Time (s)', 'Latency (s)', 'Latency Over Time', 'latency.png', directory_name)
 
 # Example usage for plotting Buffer Health
-plot_and_save_data(timestamps, buffer_times, 'Time (s)', 'Buffer Health (s)', 'Buffer Health Over Time', 'buffer_health.png', directory_name)
+min_len = min(len(timestamps), len(buffer_times))
+plot_and_save_data(timestamps[:min_len], buffer_times[:min_len], 'Time (s)', 'Buffer Health (s)', 'Buffer Health Over Time', 'buffer_health.png', directory_name)
 
 
 

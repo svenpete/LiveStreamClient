@@ -14,7 +14,7 @@ LIVE_STREAM_URL_HLS = 'http://192.168.2.87:1935/DMA/brick/playlist.m3u8'
 start_time = datetime.datetime.now()
 
 # Replace with the path to your recorded .ts file
-ts_file_path = 'MPEG.ts'
+ts_file_path = 'testetst.ts'
 
 
 input_container = av.open(LIVE_STREAM_URL_RTSP)
