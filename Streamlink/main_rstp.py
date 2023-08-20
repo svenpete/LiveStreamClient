@@ -17,7 +17,7 @@ start_time = datetime.datetime.now()
 ts_file_path = 'output-file.ts'
 
 
-input_container = av.open(ts_file_path)
+input_container = av.open(LIVE_STREAM_URL_RTMP)
 startup_time = None
 
 # Initialize variables
@@ -62,7 +62,6 @@ for packet in input_container.demux():
         continue
 
     timestamp = packet.pts * packet.stream.time_base if packet.pts is not None else None
-
 
 
     # Frame count and lost frames for FLR
@@ -113,7 +112,7 @@ for packet in input_container.demux():
         bitrate = total_bits / duration
         bitrates.append(bitrate)
         buffer_time = duration
-        buffer_times.append(buffer_time)  # Hinzufügen zur Liste
+        buffer_times.append(buffer_time)
 
     if timestamp is not None:
         timestamps.append(timestamp)
@@ -142,28 +141,11 @@ total_time = timestamps[-1] - timestamps[0] if timestamps else 1
 bandwidth = float(sum(bitrates) / len(bitrates)) if bitrates else 0
 flr = lost_frames / frame_count if frame_count >= 0 else 0
 
-# Print metrics
-print(f"Start-up Time: {startup_time.total_seconds():.2f} seconds")
-print(f"Latency: {latency.total_seconds():.2f} seconds")
-print(f"Buffer Health at end: {buffer_health:.2f} seconds")
-print(f"Number of Rebuffering Events: {rebuffering_count}")
-print(f"Total Rebuffering Duration: {rebuffering_duration.total_seconds():.2f} seconds")
-print("Number of timestamps:", len(timestamps))
-print("Number of bitrates:", len(bitrates))
-print(f"Bandwidth: {bandwidth:.2f} bps")
-print(f"Frame Loss Rate: {flr:.2%}")
-print("Latencies:", latencies)
-print("Bitrates:", bitrates)
-print("Buffer Health Values:", buffer_times)
-print("Jitter Values:", jitters)
-
-
 # Saving all figures
 current_time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 directory_name = f"Results_{current_time_str}"
 os.makedirs(directory_name, exist_ok=True)
 
-import os
 
 def plot_and_save_data(x_values, y_values, x_label, y_label, title, filename, directory):
     plt.figure()
@@ -191,7 +173,6 @@ plot_and_save_data(timestamps[:min_len], buffer_times[:min_len], 'Time (s)', 'Bu
 
 
 
-
 # Create a dictionary with all metrics
 metrics = {
     "Start-up Time": startup_time.total_seconds(),
@@ -203,6 +184,7 @@ metrics = {
     "Number of bitrates": len(bitrates),
     "Bandwidth": bandwidth,
     "Frame Loss Rate": flr,
+    "Timestamps Values": [float(timestamp) for timestamp in timestamps],
     "Latencies": latencies,
     "Bitrate Values": [float(value) for value in bitrates],
     "Buffer Health Values": [float(value) for value in buffer_times],
@@ -212,3 +194,20 @@ metrics = {
 # Save metrics to JSON
 with open(os.path.join(directory_name, 'metrics.json'), 'w') as json_file:
     json.dump(metrics, json_file, indent=4)
+
+
+# Print metrics
+print(f"Start-up Time: {startup_time.total_seconds():.2f} seconds")
+print(f"Latency: {latency.total_seconds():.2f} seconds")
+print(f"Buffer Health at end: {buffer_health:.2f} seconds")
+print(f"Number of Rebuffering Events: {rebuffering_count}")
+print(f"Total Rebuffering Duration: {rebuffering_duration.total_seconds():.2f} seconds")
+print("Number of timestamps:", len(timestamps))
+print("Number of bitrates:", len(bitrates))
+print(f"Bandwidth: {bandwidth:.2f} bps")
+print(f"Frame Loss Rate: {flr:.2%}")
+print("Timestamps:", timestamps)
+print("Latencies:", latencies)
+print("Bitrates:", bitrates)
+print("Buffer Health Values:", buffer_times)
+print("Jitter Values:", jitters)
