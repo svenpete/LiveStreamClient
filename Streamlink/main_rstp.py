@@ -146,32 +146,6 @@ current_time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 directory_name = f"Results_{current_time_str}"
 os.makedirs(directory_name, exist_ok=True)
 
-
-def plot_and_save_data(x_values, y_values, x_label, y_label, title, filename, directory):
-    plt.figure()
-    plt.plot(x_values, y_values)
-    plt.xlabel(x_label)
-    plt.ylabel(y_label)
-    plt.title(title)
-    plt.savefig(os.path.join(directory, filename))
-
-# Example usage for plotting Bitrate
-min_len = min(len(timestamps), len(bitrates))
-plot_and_save_data(timestamps[:min_len], bitrates[:min_len], 'Time (s)', 'Bitrate (bps)', 'Bitrate Over Time', 'bitrate.png', directory_name)
-
-# Example usage for plotting Jitter
-min_len = min(len(timestamps), len(jitters))
-plot_and_save_data(timestamps[:min_len], jitters[:min_len], 'Time (s)', 'Jitter (s)', 'Jitter Over Time', 'jitter.png', directory_name)
-
-# Example usage for plotting Latency
-min_len = min(len(timestamps), len(latencies))
-plot_and_save_data(timestamps[:min_len], latencies[:min_len], 'Time (s)', 'Latency (s)', 'Latency Over Time', 'latency.png', directory_name)
-
-# Example usage for plotting Buffer Health
-min_len = min(len(timestamps), len(buffer_times))
-plot_and_save_data(timestamps[:min_len], buffer_times[:min_len], 'Time (s)', 'Buffer Health (s)', 'Buffer Health Over Time', 'buffer_health.png', directory_name)
-
-
 # Create a dictionary with all metrics
 metrics = {
     "Start-up Time": startup_time.total_seconds(),
@@ -210,3 +184,30 @@ print("Latencies:", latencies)
 print("Bitrates:", bitrates)
 print("Buffer Health Values:", buffer_times)
 print("Jitter Values:", jitters)
+
+
+
+def plot_and_save_data(x_values, y_values, x_label, y_label, title, filename, directory):
+    plt.figure()
+    plt.plot(x_values, y_values)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.savefig(os.path.join(directory, filename))
+
+# Example usage for plotting Bitrate
+min_len = min(len(timestamps), len(bitrates))
+plot_and_save_data(timestamps[:min_len], bitrates[:min_len], 'Time (s)', 'Bitrate (bps)', 'Bitrate Over Time', 'bitrate.png', directory_name)
+
+# Example usage for plotting Jitter
+min_len = min(len(timestamps), len(jitters))
+plot_and_save_data(timestamps[:min_len], jitters[:min_len], 'Time (s)', 'Jitter (s)', 'Jitter Over Time', 'jitter.png', directory_name)
+
+# Example usage for plotting Latency
+min_len = min(len(timestamps), len(latencies))
+plot_and_save_data(timestamps[:min_len], latencies[:min_len], 'Time (s)', 'Latency (s)', 'Latency Over Time', 'latency.png', directory_name)
+
+# Example usage for plotting Buffer Health
+min_len = min(len(timestamps), len(buffer_times))
+plot_and_save_data(timestamps[:min_len], buffer_times[:min_len], 'Time (s)', 'Buffer Health (s)', 'Buffer Health Over Time', 'buffer_health.png', directory_name)
+
