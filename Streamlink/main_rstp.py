@@ -172,7 +172,6 @@ min_len = min(len(timestamps), len(buffer_times))
 plot_and_save_data(timestamps[:min_len], buffer_times[:min_len], 'Time (s)', 'Buffer Health (s)', 'Buffer Health Over Time', 'buffer_health.png', directory_name)
 
 
-
 # Create a dictionary with all metrics
 metrics = {
     "Start-up Time": startup_time.total_seconds(),
