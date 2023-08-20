@@ -17,7 +17,7 @@ start_time = datetime.datetime.now()
 ts_file_path = 'output-file.ts'
 
 
-input_container = av.open(LIVE_STREAM_URL_HLS)
+input_container = av.open(LIVE_STREAM_URL_RTMP)
 startup_time = None
 
 # Initialize variables
@@ -26,7 +26,7 @@ bitrates = []
 frame_rates = []
 packet_sizes = []
 frame_window = []
-WINDOW_SIZE = 50
+WINDOW_SIZE = 30
 previous_pts = None
 jitters = []
 packet_intervals = []
