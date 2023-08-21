@@ -17,7 +17,7 @@ start_time = datetime.datetime.now()
 ts_file_path = 'output-file.ts'
 
 
-input_container = av.open(LIVE_STREAM_URL_MPEG)
+input_container = av.open(LIVE_STREAM_URL_HLS)
 startup_time = None
 
 # Initialize variables
