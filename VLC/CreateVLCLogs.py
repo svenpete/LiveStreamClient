@@ -15,7 +15,7 @@ LIVE_STREAM_URLS = [
 VLC_PATH = "/Applications/VLC.app/Contents/MacOS/VLC"
 
 # # path for logs
-TARGET_DIR = "/Users/sven/PycharmProjects/LiveStreamClient/VLC_Log"
+TARGET_DIR = "/VLC_Log"
 
 # stream every url one by one
 for idx, url in enumerate(LIVE_STREAM_URLS):
